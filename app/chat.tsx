@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../types";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const mockConversas = [
   {
@@ -33,11 +35,15 @@ const mockConversas = [
 ];
 
 export default function ChatScreen() {
-  const navigation = useNavigation();
+  type NavigationProp = StackNavigationProp<RootStackParamList>;
+  const navigation = useNavigation<NavigationProp>();
+
+  const abrirConversa = (nome: string) => {
+    navigation.navigate("ChatDetail", { nome });
+  };
 
   return (
     <View style={styles.container}>
-      {/* Cabeçalho com botão voltar */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <Ionicons name="arrow-back" size={24} color="#333" />
@@ -45,15 +51,16 @@ export default function ChatScreen() {
         <Text style={styles.headerTitle}>Conversas</Text>
       </View>
 
-      {/* Lista de Conversas */}
       <FlatList
         data={mockConversas}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.nome}>{item.nome}</Text>
-            <Text style={styles.mensagem}>{item.ultimaMensagem}</Text>
-          </View>
+          <TouchableOpacity onPress={() => abrirConversa(item.nome)}>
+            <View style={styles.card}>
+              <Text style={styles.nome}>{item.nome}</Text>
+              <Text style={styles.mensagem}>{item.ultimaMensagem}</Text>
+            </View>
+          </TouchableOpacity>
         )}
         contentContainerStyle={{ paddingBottom: 20 }}
       />

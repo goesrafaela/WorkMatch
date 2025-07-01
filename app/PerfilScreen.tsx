@@ -36,7 +36,10 @@ export default function PerfilScreen() {
       </View>
 
       <View style={styles.buttonsRow}>
-        <TouchableOpacity style={styles.iconButton}>
+        <TouchableOpacity
+          style={styles.iconButton}
+          onPress={() => navigation.navigate("Config")}
+        >
           <Ionicons name="settings" size={28} color="#524355" />
           <Text style={styles.iconText}>Configurações</Text>
         </TouchableOpacity>
@@ -44,18 +47,6 @@ export default function PerfilScreen() {
         <TouchableOpacity style={styles.iconButton}>
           <Ionicons name="shield-checkmark" size={28} color="#105d3b" />
           <Text style={styles.iconText}>Segurança</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="image" size={28} color="#b62f68" />
-          <Text style={styles.iconText}>Adicionar Mídia</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.actionItem}>
-          <Ionicons name="document" size={24} color="#9d2fb6" />
-          <Text style={styles.actionText}>Documentos</Text>
         </TouchableOpacity>
       </View>
 

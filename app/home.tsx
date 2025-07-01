@@ -37,7 +37,6 @@ export default function HomeScreen() {
         stackSize={3}
         backgroundColor="transparent"
       />
-
       <Footer />
     </View>
   );
