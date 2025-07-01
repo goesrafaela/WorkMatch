@@ -37,35 +37,25 @@ export default function PerfilScreen() {
 
       <View style={styles.buttonsRow}>
         <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="settings" size={28} color="#999" />
+          <Ionicons name="settings" size={28} color="#524355" />
           <Text style={styles.iconText}>Configurações</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="shield-checkmark" size={28} color="#999" />
+          <Ionicons name="shield-checkmark" size={28} color="#105d3b" />
           <Text style={styles.iconText}>Segurança</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.iconButton}>
-          <Ionicons name="image" size={28} color="#FF5864" />
+          <Ionicons name="image" size={28} color="#b62f68" />
           <Text style={styles.iconText}>Adicionar Mídia</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.actionsRow}>
         <TouchableOpacity style={styles.actionItem}>
-          <Ionicons name="star" size={24} color="#9d2fb6" />
-          <Text style={styles.actionText}>Super Likes</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionItem}>
-          <Ionicons name="flash" size={24} color="#b62f68" />
-          <Text style={styles.actionText}>Boost</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.actionItem}>
-          <Ionicons name="flame" size={24} color="#FF5864" />
-          <Text style={styles.actionText}>Atualizar</Text>
+          <Ionicons name="document" size={24} color="#9d2fb6" />
+          <Text style={styles.actionText}>Documentos</Text>
         </TouchableOpacity>
       </View>
 

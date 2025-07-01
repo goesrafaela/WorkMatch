@@ -6,7 +6,8 @@ import RegisterScreen from "./app/register";
 import HomeScreen from "./app/home";
 import MatchScreen from "./app/match";
 import ChatScreen from "./app/chat";
-import { RootStackParamList } from "./types"; // ou "./types/index" caso precise
+import PerfilScreen from "./app/PerfilScreen";
+import { RootStackParamList } from "./types";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -21,6 +22,7 @@ export default function App() {
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Match" component={MatchScreen} />
+        <Stack.Screen name="Perfil" component={PerfilScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>

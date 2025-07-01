@@ -24,4 +24,5 @@ export type RootStackParamList = {
     Home: undefined;
     Match: undefined;
     Chat: undefined;
+    Perfil: undefined
 };

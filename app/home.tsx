@@ -59,6 +59,15 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
   },
-  nome: { fontSize: 24, fontWeight: "bold", color: "#333" },
-  descricao: { fontSize: 16, color: "#666", textAlign: "center", marginTop: 5 },
+  nome: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  descricao: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginTop: 5,
+  },
 });
