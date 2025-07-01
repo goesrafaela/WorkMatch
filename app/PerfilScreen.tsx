@@ -3,9 +3,13 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Footer from "../components/Footer";
 import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+import { RootStackParamList } from "../types";
 
 export default function PerfilScreen() {
-  const navigation = useNavigation();
+  type NavigationProp = StackNavigationProp<RootStackParamList>;
+  const navigation = useNavigation<NavigationProp>();
 
   // Mock de dados do usuário (substitua pelo que vem do contexto ou banco)
   const usuario = {
