@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import * as DocumentPicker from "expo-document-picker";
 
 export default function ChatDetail() {
   const navigation = useNavigation();
@@ -35,6 +36,24 @@ export default function ChatDetail() {
       },
     ]);
     setNovaMensagem("");
+  };
+
+  const anexarDocumento = async () => {
+    try {
+      const resultado = await DocumentPicker.getDocumentAsync();
+      if (resultado.type === "success") {
+        setMensagens((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            texto: `📎 Documento: ${resultado.name}`,
+            enviadoPorMim: true,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.log("Erro ao anexar documento:", error);
+    }
   };
 
   return (
@@ -77,7 +96,7 @@ export default function ChatDetail() {
 
       {/* Campo de Nova Mensagem */}
       <View style={styles.inputContainer}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={anexarDocumento}>
           <MaterialIcons name="attach-file" size={24} color="#666" />
         </TouchableOpacity>
         <TextInput
