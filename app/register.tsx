@@ -73,20 +73,20 @@ export default function RegisterScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Cadastro - {accountType === "empresa" ? "Empresa" : "Candidato"}
+        {accountType === "empresa" ? "Empresa" : "Candidato"}
       </Text>
 
       <View style={styles.switchContainer}>
         <CustomButton
           title="Empresa"
           onPress={() => setAccountType("empresa")}
-          color={accountType === "empresa" ? "#b62f68" : "#ccc"}
+          color={accountType === "empresa" ? "#6f6f6f" : "#ccc"}
         />
         <View style={{ width: 15 }} />
         <CustomButton
           title="Candidato"
           onPress={() => setAccountType("candidato")}
-          color={accountType === "candidato" ? "#9d2fb6" : "#ccc"}
+          color={accountType === "candidato" ? "#283747" : "#ccc"}
         />
       </View>
 
@@ -128,7 +128,7 @@ export default function RegisterScreen() {
           placeholder="Senha"
           value={senha}
           onChangeText={setSenha}
-          style={[styles.input, { flex: 1 }]}
+          style={[{ flex: 1 }]}
           secureTextEntry={!showPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#c6c5c4",
   },
   title: {
     fontSize: 24,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: 20,
   },
-  linkText: { color: "#b62f68", textAlign: "center", marginTop: 15 },
+  linkText: { color: "#161e27", textAlign: "center", marginTop: 15 },
   imagePicker: {
     alignItems: "center",
     justifyContent: "center",

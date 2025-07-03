@@ -18,6 +18,12 @@ const mockPerfis = [
     foto: "https://via.placeholder.com/300x400",
     descricao: "Designer",
   },
+  {
+    id: 3,
+    nome: "Carlos eduardo",
+    foto: "https://via.placeholder.com/300x400",
+    descricao: "Dev Mobile",
+  },
 ];
 
 export default function HomeScreen() {

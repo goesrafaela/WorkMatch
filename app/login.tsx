@@ -33,17 +33,17 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>WorkMatch.</Text>
+      <Text style={styles.title}>Breev</Text>
       <Text style={styles.subtitle}>Faça seu cadastro ou login.</Text>
 
       <CustomButton
         title="Cadastrar  Empresa"
-        color="#b62f68"
+        color="#6f6f6f"
         onPress={() => handleCadastro("empresa")}
       />
       <CustomButton
         title="Cadastrar Candidato"
-        color="#9d2fb6"
+        color="#283747"
         onPress={() => handleCadastro("candidato")}
       />
       <View style={styles.separator} />
@@ -108,26 +108,26 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#c6c5c4",
   },
   title: {
     fontSize: 35,
     fontWeight: "bold",
-    color: "#FF5864",
+    color: "#555",
     textAlign: "center",
     marginBottom: 30,
   },
   subtitle: {
     fontSize: 15,
-    fontWeight: "300",
+    fontWeight: "bold",
     color: "#333",
     textAlign: "center",
     marginBottom: 30,
   },
   separator: {
     height: 1,
-    width: "70%",
-    backgroundColor: "#ccc",
+    width: "90%",
+    backgroundColor: "#ffff",
     marginVertical: 25,
     alignSelf: "center",
   },
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 20,
     fontWeight: "bold",
-    color: "#FF5864",
+    color: "#555",
   },
   input: {
     width: "100%",
@@ -178,12 +178,12 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   linkText: {
-    color: "#b62f68",
+    color: "#161e27",
     marginTop: 10,
     textDecorationLine: "none",
   },
   closeText: {
-    color: "#999",
+    color: "#b8bcbd",
     marginTop: 15,
   },
 });

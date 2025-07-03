@@ -10,7 +10,7 @@ interface Props {
 
 export default function CustomButton({
   title,
-  color = "#FF5864",
+  color = "#555",
   onPress,
 }: Props) {
   return (
@@ -25,11 +25,12 @@ export default function CustomButton({
 
 const styles = StyleSheet.create({
   button: {
-    padding: 10,
+    padding: 9,
     width: 150,
-    borderRadius: 20,
+
+    borderRadius: 15,
     alignItems: "center",
-    marginVertical: 7,
+    marginVertical: 8,
     alignSelf: "center",
   },
   text: {
