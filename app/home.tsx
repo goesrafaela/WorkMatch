@@ -15,12 +15,12 @@ const mockPerfis = [
   {
     id: 2,
     nome: "Maria Souza",
-    foto: "https://via.placeholder.com/300x400",
+    foto: "", // Simulando caso sem imagem
     descricao: "Designer",
   },
   {
     id: 3,
-    nome: "Carlos eduardo",
+    nome: "Carlos Eduardo",
     foto: "https://via.placeholder.com/300x400",
     descricao: "Dev Mobile",
   },
@@ -35,7 +35,15 @@ export default function HomeScreen() {
         cards={perfis}
         renderCard={(card) => (
           <View style={styles.card}>
-            <Image source={{ uri: card.foto }} style={styles.image} />
+            <Image
+              source={{
+                uri:
+                  card.foto?.length > 0
+                    ? card.foto
+                    : "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+              }}
+              style={styles.image}
+            />
             <Text style={styles.nome}>{card.nome}</Text>
             <Text style={styles.descricao}>{card.descricao}</Text>
           </View>

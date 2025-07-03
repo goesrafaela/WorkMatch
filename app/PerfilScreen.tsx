@@ -11,19 +11,26 @@ export default function PerfilScreen() {
   type NavigationProp = StackNavigationProp<RootStackParamList>;
   const navigation = useNavigation<NavigationProp>();
 
-  // Mock de dados do usuário (substitua pelo que vem do contexto ou banco)
   const usuario = {
     nome: "Pedro",
     idade: 29,
-    tipo: "Candidato", // ou "Empresa"
-    foto: "https://via.placeholder.com/150", // Coloque a URL real
+    tipo: "Candidato",
+    foto: "", // Simulando sem foto. Se quiser, preencha com uma URL real.
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.profileContainer}>
         <View>
-          <Image source={{ uri: usuario.foto }} style={styles.avatar} />
+          <Image
+            source={{
+              uri:
+                usuario.foto?.length > 0
+                  ? usuario.foto
+                  : "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+            }}
+            style={styles.avatar}
+          />
           <TouchableOpacity style={styles.editIcon}>
             <Ionicons name="camera" size={20} color="#fff" />
           </TouchableOpacity>
