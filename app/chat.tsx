@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#FF5864",
+    color: "#f56624",
     marginLeft: 15,
   },
   card: {

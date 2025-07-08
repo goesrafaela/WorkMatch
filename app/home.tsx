@@ -1,7 +1,17 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image, Text, Dimensions } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  Text,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import Swiper from "react-native-deck-swiper";
 import Footer from "../components/Footer";
+import { RootStackParamList } from "../types";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { useNavigation } from "@react-navigation/native";
 
 const { width } = Dimensions.get("window");
 
@@ -15,7 +25,7 @@ const mockPerfis = [
   {
     id: 2,
     nome: "Maria Souza",
-    foto: "", // Simulando caso sem imagem
+    foto: "",
     descricao: "Designer",
   },
   {
@@ -28,13 +38,31 @@ const mockPerfis = [
 
 export default function HomeScreen() {
   const [perfis, setPerfis] = useState(mockPerfis);
+  const [curtidos, setCurtidos] = useState<typeof mockPerfis>([]);
+  const [rejeitados, setRejeitados] = useState<typeof mockPerfis>([]);
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const handleSwipeRight = (index: number) => {
+    const perfil = perfis[index];
+    setCurtidos((prev) => [...prev, perfil]);
+    console.log("❤️ Curtido:", perfil.nome);
+  };
+
+  const handleSwipeLeft = (index: number) => {
+    const perfil = perfis[index];
+    setRejeitados((prev) => [...prev, perfil]);
+    console.log("❌ Rejeitado:", perfil.nome);
+  };
 
   return (
     <View style={styles.container}>
       <Swiper
         cards={perfis}
         renderCard={(card) => (
-          <View style={styles.card}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => navigation.navigate("PerfilDetalhado", { card })}
+          >
             <Image
               source={{
                 uri:
@@ -46,10 +74,12 @@ export default function HomeScreen() {
             />
             <Text style={styles.nome}>{card.nome}</Text>
             <Text style={styles.descricao}>{card.descricao}</Text>
-          </View>
+          </TouchableOpacity>
         )}
         stackSize={3}
         backgroundColor="transparent"
+        onSwipedRight={handleSwipeRight}
+        onSwipedLeft={handleSwipeLeft}
       />
       <Footer />
     </View>
@@ -61,14 +91,14 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     borderRadius: 15,
-    height: 450,
+    height: 520, // ← altura aumentada
     padding: 15,
     alignItems: "center",
     elevation: 5,
   },
   image: {
     width: width * 0.8,
-    height: 300,
+    height: 370, // ← imagem maior
     borderRadius: 10,
     marginBottom: 15,
   },

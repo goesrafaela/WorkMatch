@@ -9,6 +9,7 @@ import ChatScreen from "./app/chat";
 import PerfilScreen from "./app/PerfilScreen";
 import ChatDetail from "./app/ChatDetail";
 import Config from "./app/Config";
+import PerfilDetalhado from "./app/PerfilDetalhado";
 
 import { RootStackParamList } from "./types";
 
@@ -29,6 +30,7 @@ export default function App() {
         <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="ChatDetail" component={ChatDetail} />
         <Stack.Screen name="Config" component={Config} />
+        <Stack.Screen name="PerfilDetalhado" component={PerfilDetalhado} />
       </Stack.Navigator>
     </NavigationContainer>
   );

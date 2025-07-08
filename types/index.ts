@@ -27,4 +27,6 @@ export type RootStackParamList = {
     Perfil: undefined;
     ChatDetail: { nome: string };
     Config: undefined;
+    PerfilDetalhado: { card: { nome: string; descricao: string; foto: string } };
+
 };

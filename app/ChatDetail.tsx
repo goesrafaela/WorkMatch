@@ -106,7 +106,7 @@ export default function ChatDetail() {
           onChangeText={setNovaMensagem}
         />
         <TouchableOpacity onPress={enviarMensagem}>
-          <Ionicons name="send" size={24} color="#FF5864" />
+          <Ionicons name="send" size={24} color="#f56624" />
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#FF5864",
+    color: "#f56624",
     marginLeft: 15,
   },
   mensagemContainer: {
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   mensagemMinha: {
-    backgroundColor: "#FF5864",
+    backgroundColor: "#f56624",
     alignSelf: "flex-end",
   },
   mensagemOutra: {
