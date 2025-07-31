@@ -6,12 +6,17 @@ import {
   Modal,
   TextInput,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import CustomButton from "../components/CustomButton";
 import { RootStackParamList } from "../types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// 👉 Importando a logo
+const logoImage = require("../assets/logo.png");
 
 export default function LoginScreen() {
   const navigation =
@@ -26,18 +31,25 @@ export default function LoginScreen() {
     navigation.navigate("Register", { accountType });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setModalVisible(false);
-    navigation.navigate("Home");
+    const isEmpresa = email.toLowerCase().includes("empresa");
+    const accountType = isEmpresa ? "empresa" : "candidato";
+
+    await AsyncStorage.setItem("accountType", accountType);
+    navigation.navigate("Home", { accountType });
   };
 
   return (
     <View style={styles.container}>
+      {/* Substituindo "Breev" pela logo */}
+      <Image source={logoImage} style={styles.logo} />
       <Text style={styles.title}>Breev</Text>
+
       <Text style={styles.subtitle}>Faça seu cadastro ou login.</Text>
 
       <CustomButton
-        title="Cadastrar  Empresa"
+        title="Cadastrar Empresa"
         color="#6f6f6f"
         onPress={() => handleCadastro("empresa")}
       />
@@ -66,7 +78,6 @@ export default function LoginScreen() {
               keyboardType="email-address"
             />
 
-            {/* Campo de senha com botão de visualizar */}
             <View style={styles.passwordContainer}>
               <TextInput
                 placeholder="Senha"
@@ -110,12 +121,20 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#c6c5c4",
   },
+  logo: {
+    width: 150,
+    height: 150,
+    alignSelf: "center",
+    resizeMode: "contain",
+    marginBottom: 20,
+  },
   title: {
-    fontSize: 35,
-    fontWeight: "bold",
-    color: "#555",
+    fontSize: 30,
+    fontWeight: "condensedBold",
+    color: "#333",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 10,
+    fontFamily: "monospace",
   },
   subtitle: {
     fontSize: 15,
@@ -123,11 +142,12 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
     marginBottom: 30,
+    fontFamily: "monospace",
   },
   separator: {
     height: 1,
     width: "90%",
-    backgroundColor: "#ffff",
+    backgroundColor: "#fff",
     marginVertical: 25,
     alignSelf: "center",
   },
@@ -180,7 +200,6 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#161e27",
     marginTop: 10,
-    textDecorationLine: "none",
   },
   closeText: {
     color: "#b8bcbd",

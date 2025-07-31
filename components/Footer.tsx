@@ -1,13 +1,21 @@
 import React from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ImageSourcePropType,
+  Image,
+} from "react-native";
 import {
   Ionicons,
   FontAwesome5,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
+import Feather from "@expo/vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types"; // Ajuste o caminho se necessário
+import { RootStackParamList } from "../types";
+const maletaIcon: ImageSourcePropType = require("../assets/maleta.png");
 
 export default function Footer() {
   const navigation =
@@ -16,7 +24,7 @@ export default function Footer() {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-        <Ionicons name="flame-outline" size={28} color="#ccc" />
+        <Feather name="briefcase" size={24} color="#ccc" />
       </TouchableOpacity>
 
       <TouchableOpacity
