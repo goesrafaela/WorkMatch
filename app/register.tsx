@@ -17,6 +17,7 @@ import { RootStackParamList } from "../types";
 import CustomButton from "../components/CustomButton";
 import { cadastrarUsuario, mockDB } from "../utils/mockData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MaskInput, { Masks } from "react-native-mask-input";
 
 type RouteParams = {
   accountType: "empresa" | "candidato";
@@ -40,10 +41,15 @@ export default function RegisterScreen() {
   const [portfolio, setPortfolio] = useState("");
   const [imagem, setImagem] = useState<string | null>(null);
   const [tiposSelecionados, setTiposSelecionados] = useState<string[]>([]);
+  const [cnpj, setCnpj] = useState("");
+  const [tipoProfissional, setTipoProfissional] = useState<"PJ" | "CLT" | null>(
+    null
+  );
 
-  const opcoesTipo = ["CLT", "PJ", "Freelancer"];
+  const opcoesTipoCandidato = ["CLT", "PJ"];
+  const opcoesTipoEmpresa = ["CLT", "PJ"];
 
-  const handleTipoToggle = (tipo: string) => {
+  const handleTipoToggleCandidato = (tipo: string) => {
     if (tiposSelecionados.includes(tipo)) {
       setTiposSelecionados(tiposSelecionados.filter((t) => t !== tipo));
     } else if (tiposSelecionados.length < 2) {
@@ -64,8 +70,8 @@ export default function RegisterScreen() {
   };
 
   const handleCadastro = async () => {
-    if (!nome || !detalhe || !telefone || !email || !senha) {
-      Alert.alert("Erro", "Preencha todos os campos");
+    if (!nome || !telefone || !email || !senha) {
+      Alert.alert("Erro", "Preencha todos os campos obrigatórios");
       return;
     }
 
@@ -75,14 +81,27 @@ export default function RegisterScreen() {
       email,
       senha,
       imagem,
-      portfolio,
     };
 
     if (accountType === "empresa") {
-      dados.profissionalProcurado = detalhe;
+      if (!cnpj) {
+        Alert.alert("Erro", "Informe o CNPJ da empresa");
+        return;
+      }
+      if (!tipoProfissional) {
+        Alert.alert("Erro", "Selecione o tipo de profissional que procura");
+        return;
+      }
+      dados.cnpj = cnpj;
+      dados.profissionalProcurado = tipoProfissional;
     } else {
+      if (!detalhe) {
+        Alert.alert("Erro", "Informe suas habilidades (separadas por vírgula)");
+        return;
+      }
       dados.habilidades = detalhe.split(",").map((h) => h.trim());
       dados.tiposServico = tiposSelecionados;
+      dados.portfolio = portfolio;
     }
 
     const id = cadastrarUsuario(dados, accountType);
@@ -138,6 +157,17 @@ export default function RegisterScreen() {
           style={styles.input}
         />
 
+        {accountType === "empresa" && (
+          <MaskInput
+            value={cnpj}
+            onChangeText={(masked) => setCnpj(masked)}
+            mask={Masks.BRL_CNPJ}
+            keyboardType="numeric"
+            style={styles.input}
+            placeholder="CNPJ"
+          />
+        )}
+
         <TextInput
           placeholder="Telefone"
           value={telefone}
@@ -171,41 +201,25 @@ export default function RegisterScreen() {
           </TouchableOpacity>
         </View>
 
-        <TextInput
-          placeholder={
-            accountType === "empresa"
-              ? "Profissional que procura"
-              : "Habilidades (separadas por vírgula)"
-          }
-          value={detalhe}
-          onChangeText={setDetalhe}
-          style={styles.input}
-        />
-
-        <TextInput
-          placeholder="Portfólio ou Site (opcional)"
-          value={portfolio}
-          onChangeText={setPortfolio}
-          style={styles.input}
-        />
-
-        {/* Seletor de tipo de serviço (apenas se for candidato) */}
-        {accountType === "candidato" && (
+        {/* Seletor para empresa */}
+        {accountType === "empresa" && (
           <View style={styles.tipoContainer}>
-            <Text style={styles.tipoTitle}>Tipo de Serviço:</Text>
+            <Text style={styles.tipoTitle}>
+              Tipo de profissional que procura:
+            </Text>
             <View style={styles.tipoOptions}>
-              {opcoesTipo.map((tipo) => (
+              {opcoesTipoEmpresa.map((tipo) => (
                 <TouchableOpacity
                   key={tipo}
                   style={[
                     styles.tipoBotao,
-                    tiposSelecionados.includes(tipo) && styles.tipoSelecionado,
+                    tipoProfissional === tipo && styles.tipoSelecionado,
                   ]}
-                  onPress={() => handleTipoToggle(tipo)}
+                  onPress={() => setTipoProfissional(tipo as "PJ" | "CLT")}
                 >
                   <Text
                     style={{
-                      color: tiposSelecionados.includes(tipo) ? "#fff" : "#333",
+                      color: tipoProfissional === tipo ? "#fff" : "#333",
                     }}
                   >
                     {tipo}
@@ -214,6 +228,52 @@ export default function RegisterScreen() {
               ))}
             </View>
           </View>
+        )}
+
+        {/* Campos para candidato */}
+        {accountType === "candidato" && (
+          <>
+            <TextInput
+              placeholder="Habilidades (separadas por vírgula)"
+              value={detalhe}
+              onChangeText={setDetalhe}
+              style={styles.input}
+            />
+
+            <TextInput
+              placeholder="Portfólio ou Site (opcional)"
+              value={portfolio}
+              onChangeText={setPortfolio}
+              style={styles.input}
+            />
+
+            <View style={styles.tipoContainer}>
+              <Text style={styles.tipoTitle}>Tipo de Serviço:</Text>
+              <View style={styles.tipoOptions}>
+                {opcoesTipoCandidato.map((tipo) => (
+                  <TouchableOpacity
+                    key={tipo}
+                    style={[
+                      styles.tipoBotao,
+                      tiposSelecionados.includes(tipo) &&
+                        styles.tipoSelecionado,
+                    ]}
+                    onPress={() => handleTipoToggleCandidato(tipo)}
+                  >
+                    <Text
+                      style={{
+                        color: tiposSelecionados.includes(tipo)
+                          ? "#fff"
+                          : "#333",
+                      }}
+                    >
+                      {tipo}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </>
         )}
 
         <CustomButton title="Cadastrar" onPress={handleCadastro} />
