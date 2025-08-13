@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { excluirContaAPI } from "../services/api";
 
 export default function Config() {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -29,12 +30,29 @@ export default function Config() {
           text: "Excluir",
           style: "destructive",
           onPress: async () => {
-            await AsyncStorage.clear();
-            Alert.alert(
-              "Conta excluída",
-              "Sua conta foi removida com sucesso."
-            );
-            navigation.navigate("Login");
+            try {
+              const tipo = await AsyncStorage.getItem("tipoConta"); // "candidatos" ou "empresas"
+              const id = await AsyncStorage.getItem("idUsuario");
+
+              if (!tipo || !id) {
+                Alert.alert("Erro", "Não foi possível identificar sua conta.");
+                return;
+              }
+
+              await excluirContaAPI(
+                tipo as "candidatos" | "empresas",
+                Number(id)
+              );
+
+              await AsyncStorage.clear();
+              Alert.alert(
+                "Conta excluída",
+                "Sua conta foi removida com sucesso."
+              );
+              navigation.navigate("Login");
+            } catch (error) {
+              Alert.alert("Erro", "Não foi possível excluir a conta.");
+            }
           },
         },
       ]
