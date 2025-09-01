@@ -7,31 +7,49 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import CustomButton from "../components/CustomButton";
-import { RootStackParamList } from "../types";
+import { RootStackParamList } from "../types/index";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-// 👉 Importando a logo
-const logoImage = require("../assets/logo.png");
+// 👉 Logo
+const logoImage = require("../assets/logo.jpg");
 
 export default function LoginScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [accountTypeModalVisible, setAccountTypeModalVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
-  const handleCadastro = (accountType: "empresa" | "candidato") => {
-    navigation.navigate("Register", { accountType });
+  const handleCadastro = () => {
+    // Abre o modal de seleção de tipo de conta
+    setAccountTypeModalVisible(true);
+  };
+
+  const handleSelectAccountType = (type: "candidato" | "empresa") => {
+    setAccountTypeModalVisible(false);
+    if (type === "candidato") {
+      navigation.navigate("RegisterCandidate");
+    } else {
+      navigation.navigate("RegisterCompany");
+    }
   };
 
   const handleLogin = async () => {
+    if (!email || !senha) {
+      Alert.alert("Erro", "Preencha todos os campos!");
+      return;
+    }
+
     setModalVisible(false);
     const isEmpresa = email.toLowerCase().includes("empresa");
     const accountType = isEmpresa ? "empresa" : "candidato";
@@ -42,27 +60,36 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Substituindo "Breev" pela logo */}
+      {/* Logo */}
       <Image source={logoImage} style={styles.logo} />
-      <Text style={styles.title}>Breev</Text>
 
-      <Text style={styles.subtitle}>Faça seu cadastro ou login.</Text>
+      {/* Texto de convite */}
+      <Text style={styles.title}>Junte-se ao Breev</Text>
+      <Text style={styles.subtitle}>
+        Encontre oportunidades de emprego e serviço
+      </Text>
 
-      <CustomButton
-        title="Cadastrar Empresa"
-        color="#6f6f6f"
-        onPress={() => handleCadastro("empresa")}
-      />
-      <CustomButton
-        title="Cadastrar Candidato"
-        color="#283747"
-        onPress={() => handleCadastro("candidato")}
-      />
-      <View style={styles.separator} />
+      {/* Botões */}
+      <TouchableOpacity
+        style={[styles.button, styles.buttonWhite]}
+        onPress={handleCadastro}
+      >
+        <Text style={styles.buttonWhiteText}>Inscrever-se com e-mail</Text>
+      </TouchableOpacity>
 
-      <View style={styles.enterButtonContainer}>
-        <CustomButton title="Entrar" onPress={() => setModalVisible(true)} />
-      </View>
+      <TouchableOpacity
+        style={[styles.button, styles.buttonBlue]}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.buttonBlueText}>Entrar</Text>
+      </TouchableOpacity>
+
+      {/* Termos */}
+      <Text style={styles.terms}>
+        Ao continuar, você concorda com os nossos{" "}
+        <Text style={styles.link}>Termos de Serviço</Text> e{" "}
+        <Text style={styles.link}>Política de Privacidade</Text>
+      </Text>
 
       {/* Modal de Login */}
       <Modal visible={modalVisible} transparent animationType="slide">
@@ -110,6 +137,35 @@ export default function LoginScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Modal de Seleção de Tipo de Conta */}
+      <Modal visible={accountTypeModalVisible} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Escolha o tipo de conta</Text>
+            
+            <TouchableOpacity 
+              style={[styles.accountTypeButton, styles.candidateButton]}
+              onPress={() => handleSelectAccountType("candidato")}
+            >
+              <Text style={styles.accountTypeButtonText}>Sou Candidato</Text>
+              <Text style={styles.accountTypeDescription}>Procuro oportunidades de trabalho</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[styles.accountTypeButton, styles.companyButton]}
+              onPress={() => handleSelectAccountType("empresa")}
+            >
+              <Text style={styles.accountTypeButtonText}>Sou Empresa</Text>
+              <Text style={styles.accountTypeDescription}>Procuro profissionais para contratar</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setAccountTypeModalVisible(false)}>
+              <Text style={styles.closeText}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -118,41 +174,62 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#c6c5c4",
+    padding: 30,
+    backgroundColor: "#fff",
   },
   logo: {
-    width: 150,
-    height: 150,
+    width: 140,
+    height: 140,
     alignSelf: "center",
     resizeMode: "contain",
     marginBottom: 20,
   },
   title: {
-    fontSize: 30,
-    fontWeight: "condensedBold",
-    color: "#333",
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#000",
     textAlign: "center",
-    marginBottom: 10,
-    fontFamily: "monospace",
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 15,
-    fontWeight: "bold",
-    color: "#333",
+    color: "#555",
     textAlign: "center",
     marginBottom: 30,
-    fontFamily: "monospace",
   },
-  separator: {
-    height: 1,
-    width: "90%",
+  button: {
+    width: "100%",
+    paddingVertical: 15,
+    borderRadius: 8,
+    marginBottom: 15,
+    alignItems: "center",
+  },
+  buttonWhite: {
     backgroundColor: "#fff",
-    marginVertical: 25,
-    alignSelf: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
   },
-  enterButtonContainer: {
-    marginTop: 40,
+  buttonWhiteText: {
+    color: "#000",
+    fontWeight: "600",
+  },
+  buttonBlue: {
+    backgroundColor: "#2487f1",
+  },
+  buttonBlueText: {
+    color: "#fff",
+    fontWeight: "600",
+  },
+  terms: {
+    fontSize: 12,
+    color: "#666",
+    textAlign: "center",
+    marginTop: 20,
+    lineHeight: 18,
+  },
+  link: {
+    color: "#2487f1",
+    textDecorationLine: "underline",
   },
   modalContainer: {
     flex: 1,
@@ -198,11 +275,34 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   linkText: {
-    color: "#161e27",
+    color: "#2487f1",
     marginTop: 10,
   },
   closeText: {
     color: "#b8bcbd",
     marginTop: 15,
+  },
+  accountTypeButton: {
+    width: "100%",
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 15,
+    alignItems: "center",
+  },
+  candidateButton: {
+    backgroundColor: "#2487f1",
+  },
+  companyButton: {
+    backgroundColor: "#34a853",
+  },
+  accountTypeButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  accountTypeDescription: {
+    color: "#fff",
+    fontSize: 12,
   },
 });

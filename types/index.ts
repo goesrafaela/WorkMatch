@@ -21,6 +21,8 @@ export interface CandidateProfile {
 export type RootStackParamList = {
     Login: undefined;
     Register: { accountType: "empresa" | "candidato" };
+    RegisterCandidate: undefined;
+    RegisterCompany: undefined;
     Home: { accountType: "empresa" | "candidato" };
     Match: undefined;
     Chat: undefined;
@@ -30,3 +32,5 @@ export type RootStackParamList = {
     PerfilDetalhado: { card: { nome: string; descricao: string; foto: string } };
 
 };
+
+

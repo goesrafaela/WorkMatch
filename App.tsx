@@ -3,6 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "./app/login";
 import RegisterScreen from "./app/register";
+import RegisterCandidateScreen from "./app/registerCandidate";
+import RegisterCompanyScreen from "./app/registerCompany";
 import HomeScreen from "./app/home";
 import MatchScreen from "./app/match";
 import ChatScreen from "./app/chat";
@@ -11,7 +13,7 @@ import ChatDetail from "./app/ChatDetail";
 import Config from "./app/Config";
 import PerfilDetalhado from "./app/PerfilDetalhado";
 
-import { RootStackParamList } from "./types";
+import { RootStackParamList } from "./types/index";
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -24,6 +26,14 @@ export default function App() {
       >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen
+          name="RegisterCandidate"
+          component={RegisterCandidateScreen}
+        />
+        <Stack.Screen
+          name="RegisterCompany"
+          component={RegisterCompanyScreen}
+        />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Match" component={MatchScreen} />
         <Stack.Screen name="Perfil" component={PerfilScreen} />

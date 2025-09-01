@@ -4,7 +4,7 @@
     "slug": "Breev",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.png",
+    "icon": "./assets/logo.jpg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.png",
+        "foregroundImage": "./assets/logo.jpg",
         "backgroundColor": "#C2CCC3"
       },
       "edgeToEdgeEnabled": true

@@ -10,7 +10,7 @@ interface Props {
 
 export default function CustomButton({
   title,
-  color = "#555",
+  color = "#2487f1ff",
   onPress,
 }: Props) {
   return (

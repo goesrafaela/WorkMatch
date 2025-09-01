@@ -13,7 +13,6 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types";
 import CustomButton from "../components/CustomButton";
 import { cadastrarUsuario, mockDB } from "../utils/mockData";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -21,6 +20,18 @@ import MaskInput, { Masks } from "react-native-mask-input";
 
 type RouteParams = {
   accountType: "empresa" | "candidato";
+};
+
+type RootStackParamList = {
+  Login: undefined;
+  Register: { accountType: "empresa" | "candidato" };
+  Home: undefined;
+  Match: undefined;
+  Perfil: undefined;
+  Chat: undefined;
+  ChatDetail: { chatId: string };
+  Config: undefined;
+  PerfilDetalhado: { id: string };
 };
 
 export default function RegisterScreen() {
@@ -31,9 +42,7 @@ export default function RegisterScreen() {
 
   const [senha, setSenha] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [accountType, setAccountType] = useState<"empresa" | "candidato">(
-    initialAccountType
-  );
+  const [accountType, setAccountType] = useState<"empresa" | "candidato">(initialAccountType);
   const [nome, setNome] = useState("");
   const [detalhe, setDetalhe] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -42,9 +51,13 @@ export default function RegisterScreen() {
   const [imagem, setImagem] = useState<string | null>(null);
   const [tiposSelecionados, setTiposSelecionados] = useState<string[]>([]);
   const [cnpj, setCnpj] = useState("");
-  const [tipoProfissional, setTipoProfissional] = useState<"PJ" | "CLT" | null>(
-    null
-  );
+  const [tipoProfissional, setTipoProfissional] = useState<"PJ" | "CLT" | null>(null);
+  
+  // Novos campos para empresa baseados no layout anterior
+  const [servicos, setServicos] = useState("");
+  const [bio, setBio] = useState("");
+  const [localizacao, setLocalizacao] = useState("");
+  const [areaCobertura, setAreaCobertura] = useState("");
 
   const opcoesTipoCandidato = ["CLT", "PJ"];
   const opcoesTipoEmpresa = ["CLT", "PJ"];
@@ -70,51 +83,89 @@ export default function RegisterScreen() {
   };
 
   const handleCadastro = async () => {
-    if (!nome || !telefone || !email || !senha) {
-      Alert.alert("Erro", "Preencha todos os campos obrigatórios");
-      return;
-    }
-
-    let dados: any = {
-      nome,
-      telefone,
-      email,
-      senha,
-      imagem,
-    };
-
     if (accountType === "empresa") {
-      if (!cnpj) {
-        Alert.alert("Erro", "Informe o CNPJ da empresa");
+      // Validação para empresa
+      if (!nome || !email || !senha || !servicos || !bio || !localizacao || !areaCobertura) {
+        Alert.alert("Erro", "Preencha todos os campos obrigatórios");
         return;
       }
-      if (!tipoProfissional) {
-        Alert.alert("Erro", "Selecione o tipo de profissional que procura");
-        return;
+      
+      let dados: any = {
+        nome,
+        telefone,
+        email,
+        senha,
+        imagem,
+        servicos,
+        bio,
+        localizacao,
+        areaCobertura
+      };
+      
+      // salva no "mock banco"
+      const id = cadastrarUsuario(dados, accountType);
+      mockDB.userType = accountType;
+
+      // salva localmente para PerfilScreen
+      try {
+        await AsyncStorage.setItem("accountType", accountType);
+        await AsyncStorage.setItem("userName", nome);
+        await AsyncStorage.setItem("userPhoto", imagem || "");
+        await AsyncStorage.setItem("userPhone", telefone);
+        await AsyncStorage.setItem("userEmail", email);
+        await AsyncStorage.setItem("userServices", servicos);
+        await AsyncStorage.setItem("userBio", bio);
+        await AsyncStorage.setItem("userLocation", localizacao);
+        await AsyncStorage.setItem("userCoverageArea", areaCobertura);
+      } catch (err) {
+        console.error("Erro ao salvar dados no AsyncStorage:", err);
       }
-      dados.cnpj = cnpj;
-      dados.profissionalProcurado = tipoProfissional;
+
+      Alert.alert("Sucesso", `Cadastro realizado com sucesso! ID: ${id}`, [
+        {
+          text: "OK",
+          onPress: () => navigation.replace("Perfil"),
+        },
+      ]);
     } else {
-      if (!detalhe) {
-        Alert.alert("Erro", "Informe suas habilidades (separadas por vírgula)");
+      // Validação para candidato (atualizada)
+      if (!nome || !email || !senha || !bio || !detalhe) {
+        Alert.alert("Erro", "Preencha todos os campos obrigatórios");
         return;
       }
-      dados.habilidades = detalhe.split(",").map((h) => h.trim());
-      dados.tiposServico = tiposSelecionados;
-      dados.portfolio = portfolio;
+      
+      let dados: any = {
+        nome,
+        email,
+        senha,
+        imagem,
+        bio,
+        habilidades: detalhe.split(",").map((h) => h.trim()),
+      };
+      
+      // salva no "mock banco"
+      const id = cadastrarUsuario(dados, accountType);
+      mockDB.userType = accountType;
+
+      // salva localmente para PerfilScreen
+      try {
+        await AsyncStorage.setItem("accountType", accountType);
+        await AsyncStorage.setItem("userName", nome);
+        await AsyncStorage.setItem("userPhoto", imagem || "");
+        await AsyncStorage.setItem("userEmail", email);
+        await AsyncStorage.setItem("userBio", bio);
+        await AsyncStorage.setItem("userSkills", detalhe);
+      } catch (err) {
+        console.error("Erro ao salvar dados no AsyncStorage:", err);
+      }
+
+      Alert.alert("Sucesso", `Cadastro realizado com sucesso! ID: ${id}`, [
+        {
+          text: "OK",
+          onPress: () => navigation.replace("Perfil"),
+        },
+      ]);
     }
-
-    const id = cadastrarUsuario(dados, accountType);
-    mockDB.userType = accountType;
-
-    await AsyncStorage.setItem("accountType", accountType);
-
-    Alert.alert("Sucesso", `Cadastro realizado com sucesso! ID: ${id}`, [
-      {
-        text: "OK",
-        onPress: () => navigation.navigate("Home", { accountType }),
-      },
-    ]);
   };
 
   return (
@@ -140,143 +191,170 @@ export default function RegisterScreen() {
           />
         </View>
 
-        <TouchableOpacity onPress={escolherImagem} style={styles.imagePicker}>
-          {imagem ? (
-            <Image source={{ uri: imagem }} style={styles.profileImage} />
-          ) : (
-            <Ionicons name="camera" size={40} color="#888" />
-          )}
-        </TouchableOpacity>
+        {accountType === "empresa" ? (
+          // Interface de cadastro de empresa (mantida do código anterior)
+          <View style={styles.formContainer}>
+            <TouchableOpacity onPress={escolherImagem} style={styles.logoPickerContainer}>
+              {imagem ? (
+                <Image source={{ uri: imagem }} style={styles.logoImage} />
+              ) : (
+                <View style={styles.addLogoButton}>
+                  <Text style={styles.addLogoText}>Add logo</Text>
+                </View>
+              )}
+            </TouchableOpacity>
 
-        <TextInput
-          placeholder={
-            accountType === "empresa" ? "Nome da Empresa" : "Nome Completo"
-          }
-          value={nome}
-          onChangeText={setNome}
-          style={styles.input}
-        />
-
-        {accountType === "empresa" && (
-          <MaskInput
-            value={cnpj}
-            onChangeText={(masked) => setCnpj(masked)}
-            mask={Masks.BRL_CNPJ}
-            keyboardType="numeric"
-            style={styles.input}
-            placeholder="CNPJ"
-          />
-        )}
-
-        <TextInput
-          placeholder="Telefone"
-          value={telefone}
-          onChangeText={setTelefone}
-          style={styles.input}
-          keyboardType="phone-pad"
-        />
-
-        <TextInput
-          placeholder="E-mail"
-          value={email}
-          onChangeText={setEmail}
-          style={styles.input}
-          keyboardType="email-address"
-        />
-
-        <View style={styles.passwordContainer}>
-          <TextInput
-            placeholder="Senha"
-            value={senha}
-            onChangeText={setSenha}
-            style={{ flex: 1 }}
-            secureTextEntry={!showPassword}
-          />
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Ionicons
-              name={showPassword ? "eye-off" : "eye"}
-              size={24}
-              color="#666"
+            <TextInput
+              placeholder="Acme Corporation"
+              value={nome}
+              onChangeText={setNome}
+              style={styles.companyInput}
             />
-          </TouchableOpacity>
-        </View>
 
-        {/* Seletor para empresa */}
-        {accountType === "empresa" && (
-          <View style={styles.tipoContainer}>
-            <Text style={styles.tipoTitle}>
-              Tipo de profissional que procura:
-            </Text>
-            <View style={styles.tipoOptions}>
-              {opcoesTipoEmpresa.map((tipo) => (
-                <TouchableOpacity
-                  key={tipo}
-                  style={[
-                    styles.tipoBotao,
-                    tipoProfissional === tipo && styles.tipoSelecionado,
-                  ]}
-                  onPress={() => setTipoProfissional(tipo as "PJ" | "CLT")}
-                >
-                  <Text
-                    style={{
-                      color: tipoProfissional === tipo ? "#fff" : "#333",
-                    }}
-                  >
-                    {tipo}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+            <Text style={styles.sectionLabel}>Services</Text>
+            <TextInput
+              placeholder="e.g. Software Development"
+              value={servicos}
+              onChangeText={setServicos}
+              style={styles.companyInput}
+            />
+
+            <Text style={styles.sectionLabel}>Bio</Text>
+            <TextInput
+              placeholder="Acme Corporation provides innovative solutions to businesses worldwide."
+              value={bio}
+              onChangeText={setBio}
+              style={styles.companyInput}
+              multiline
+              numberOfLines={3}
+            />
+
+            <View style={styles.locationContainer}>
+              <Ionicons name="location-outline" size={24} color="#666" />
+              <TextInput
+                placeholder="New York, NY"
+                value={localizacao}
+                onChangeText={setLocalizacao}
+                style={styles.locationInput}
+              />
             </View>
+
+            <Text style={styles.sectionLabel}>Coverage Area</Text>
+            <TextInput
+              placeholder="Tri-State Area"
+              value={areaCobertura}
+              onChangeText={setAreaCobertura}
+              style={styles.companyInput}
+            />
+
+            <TextInput
+              placeholder="E-mail"
+              value={email}
+              onChangeText={setEmail}
+              style={styles.companyInput}
+              keyboardType="email-address"
+            />
+
+            <View style={styles.passwordContainer}>
+              <TextInput
+                placeholder="Senha"
+                value={senha}
+                onChangeText={setSenha}
+                style={{ flex: 1 }}
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="#666"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity style={styles.continueButton} onPress={handleCadastro}>
+              <Text style={styles.continueButtonText}>Continue</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          // Nova interface de cadastro de candidato baseada no layout da imagem
+          <View style={styles.formContainer}>
+            <View style={styles.logoContainer}>
+              <Text style={styles.breevLogo}>Breev</Text>
+              
+              <TouchableOpacity onPress={escolherImagem} style={styles.profileImageContainer}>
+                {imagem ? (
+                  <Image source={{ uri: imagem }} style={styles.candidateProfileImage} />
+                ) : (
+                  <Image 
+                    source={require('../assets/logo.jpg')} 
+                    style={styles.candidateProfileImage} 
+                  />
+                )}
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.addPhotoButton} onPress={escolherImagem}>
+                <Text style={styles.addPhotoText}>Add Photo</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.fieldLabel}>Full Name</Text>
+            <TextInput
+              placeholder=""
+              value={nome}
+              onChangeText={setNome}
+              style={styles.candidateInput}
+            />
+
+            <Text style={styles.fieldLabel}>Bio</Text>
+            <TextInput
+              placeholder="Briefly describe yourself..."
+              value={bio}
+              onChangeText={setBio}
+              style={styles.candidateInput}
+              multiline
+              numberOfLines={3}
+            />
+
+            <Text style={styles.fieldLabel}>Skills</Text>
+            <TextInput
+              placeholder="List your key skills..."
+              value={detalhe}
+              onChangeText={setDetalhe}
+              style={styles.candidateInput}
+            />
+
+            <TextInput
+              placeholder="E-mail"
+              value={email}
+              onChangeText={setEmail}
+              style={[styles.candidateInput, {marginTop: 15}]}
+              keyboardType="email-address"
+            />
+
+            <View style={styles.passwordContainer}>
+              <TextInput
+                placeholder="Senha"
+                value={senha}
+                onChangeText={setSenha}
+                style={{ flex: 1 }}
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={24}
+                  color="#666"
+                />
+              </TouchableOpacity>
+            </View>
+
+            <TouchableOpacity style={styles.createProfileButton} onPress={handleCadastro}>
+              <Text style={styles.createProfileText}>Create Profile</Text>
+            </TouchableOpacity>
           </View>
         )}
 
-        {/* Campos para candidato */}
-        {accountType === "candidato" && (
-          <>
-            <TextInput
-              placeholder="Habilidades (separadas por vírgula)"
-              value={detalhe}
-              onChangeText={setDetalhe}
-              style={styles.input}
-            />
-
-            <TextInput
-              placeholder="Portfólio ou Site (opcional)"
-              value={portfolio}
-              onChangeText={setPortfolio}
-              style={styles.input}
-            />
-
-            <View style={styles.tipoContainer}>
-              <Text style={styles.tipoTitle}>Tipo de Serviço:</Text>
-              <View style={styles.tipoOptions}>
-                {opcoesTipoCandidato.map((tipo) => (
-                  <TouchableOpacity
-                    key={tipo}
-                    style={[
-                      styles.tipoBotao,
-                      tiposSelecionados.includes(tipo) &&
-                        styles.tipoSelecionado,
-                    ]}
-                    onPress={() => handleTipoToggleCandidato(tipo)}
-                  >
-                    <Text
-                      style={{
-                        color: tiposSelecionados.includes(tipo)
-                          ? "#fff"
-                          : "#333",
-                      }}
-                    >
-                      {tipo}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-          </>
-        )}
-
-        <CustomButton title="Cadastrar" onPress={handleCadastro} />
         <TouchableOpacity onPress={() => navigation.navigate("Login")}>
           <Text style={styles.linkText}>Já tem cadastro? Faça o login.</Text>
         </TouchableOpacity>
@@ -289,7 +367,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "center",
-    backgroundColor: "#c6c5c4",
+    backgroundColor: "#f5f5f5",
     paddingBottom: 40,
   },
   container: {
@@ -372,5 +450,127 @@ const styles = StyleSheet.create({
   tipoSelecionado: {
     backgroundColor: "#283747",
     borderColor: "#283747",
+  },
+  // Estilos para o layout da empresa
+  formContainer: {
+    width: "100%",
+  },
+  logoPickerContainer: {
+    alignSelf: "center",
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#f0f0f0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+    overflow: "hidden",
+  },
+  logoImage: {
+    width: 100,
+    height: 100,
+  },
+  addLogoButton: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addLogoText: {
+    color: "#666",
+    fontSize: 16,
+  },
+  companyInput: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    padding: 10,
+    marginBottom: 20,
+    fontSize: 16,
+  },
+  sectionLabel: {
+    fontSize: 16,
+    color: "#666",
+    marginBottom: 5,
+  },
+  locationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  locationInput: {
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    padding: 10,
+    marginLeft: 5,
+    fontSize: 16,
+  },
+  continueButton: {
+    backgroundColor: "#007bff",
+    borderRadius: 5,
+    padding: 15,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  continueButtonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  // Novos estilos para o layout do candidato
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  breevLogo: {
+    fontSize: 40,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+  profileImageContainer: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    overflow: "hidden",
+    marginBottom: 15,
+  },
+  candidateProfileImage: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+  },
+  addPhotoButton: {
+    backgroundColor: "#007bff",
+    borderRadius: 25,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+  },
+  addPhotoText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  fieldLabel: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  candidateInput: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 20,
+    backgroundColor: "#fff",
+  },
+  createProfileButton: {
+    backgroundColor: "#007bff",
+    borderRadius: 25,
+    padding: 15,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  createProfileText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
