@@ -38,9 +38,9 @@ export default function LoginScreen() {
   const handleSelectAccountType = (type: "candidato" | "empresa") => {
     setAccountTypeModalVisible(false);
     if (type === "candidato") {
-      navigation.navigate("RegisterCandidate");
+      navigation.navigate("CandidateStep1");
     } else {
-      navigation.navigate("RegisterCompany");
+      navigation.navigate("registerCompany");
     }
   };
 
@@ -55,7 +55,7 @@ export default function LoginScreen() {
     const accountType = isEmpresa ? "empresa" : "candidato";
 
     await AsyncStorage.setItem("accountType", accountType);
-    navigation.navigate("Home", { accountType });
+    navigation.navigate("home");
   };
 
   return (
@@ -139,25 +139,33 @@ export default function LoginScreen() {
       </Modal>
 
       {/* Modal de Seleção de Tipo de Conta */}
-      <Modal visible={accountTypeModalVisible} transparent animationType="slide">
+      <Modal
+        visible={accountTypeModalVisible}
+        transparent
+        animationType="slide"
+      >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Escolha o tipo de conta</Text>
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               style={[styles.accountTypeButton, styles.candidateButton]}
               onPress={() => handleSelectAccountType("candidato")}
             >
               <Text style={styles.accountTypeButtonText}>Sou Candidato</Text>
-              <Text style={styles.accountTypeDescription}>Procuro oportunidades de trabalho</Text>
+              <Text style={styles.accountTypeDescription}>
+                Procuro oportunidades de trabalho
+              </Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               style={[styles.accountTypeButton, styles.companyButton]}
               onPress={() => handleSelectAccountType("empresa")}
             >
               <Text style={styles.accountTypeButtonText}>Sou Empresa</Text>
-              <Text style={styles.accountTypeDescription}>Procuro profissionais para contratar</Text>
+              <Text style={styles.accountTypeDescription}>
+                Procuro profissionais para contratar
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setAccountTypeModalVisible(false)}>

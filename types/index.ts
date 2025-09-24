@@ -3,34 +3,47 @@
 export type UserType = "empresa" | "candidato";
 
 export interface CompanyProfile {
-    id: string;
-    nomeEmpresa: string;
-    porte: string;
-    nomeResponsavel: string;
-    profissaoBuscada: string;
+  id: string;
+  nomeEmpresa: string;
+  porte: string;
+  nomeResponsavel: string;
+  profissaoBuscada: string;
 }
 
 export interface CandidateProfile {
-    id: string;
-    nome: string;
-    email: string;
-    telefone: string;
-    habilidades: string[];
+  nome?: string;
+  sobrenome?: string;
+  nascimento?: string;
+  imagem?: string | null;
+  localizacao?: string;
+  areas?: string;
+  experiencia?: string;
+  bio?: string;
+  genero?: string
 }
 
 export type RootStackParamList = {
-    Login: undefined;
-    Register: { accountType: "empresa" | "candidato" };
-    RegisterCandidate: undefined;
-    RegisterCompany: undefined;
-    Home: { accountType: "empresa" | "candidato" };
-    Match: undefined;
-    Chat: undefined;
-    Perfil: undefined;
-    ChatDetail: { nome: string };
-    Config: undefined;
-    PerfilDetalhado: { card: { nome: string; descricao: string; foto: string } };
-
+  index: undefined;
+  login: undefined;
+  register: undefined;
+  SearchScreen: undefined;
+  registerCompany: undefined;
+  CandidateStep1: undefined;
+  CandidateStep2: { candidateData: CandidateProfile };
+  CandidateStep3: { candidateData: CandidateProfile };
+  CandidateStep4: { candidateData: CandidateProfile };
+  CandidateStep5: { candidateData: CandidateProfile };
+  CandidateStep6: { candidateData: CandidateProfile };
+  home: undefined;
+  chat: undefined;
+  match: undefined;
+  PerfilScreen: undefined;
+  PerfilDetalhado: { userId: string };
+  StartScreen: undefined;
+  ChatDetail: { chatId: string };
+  Config: undefined;
+  CriarVaga: undefined;
+  VisualizarInteressados: { vagaId: string };
 };
 
 

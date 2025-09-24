@@ -3,19 +3,12 @@ import {
   View,
   StyleSheet,
   TouchableOpacity,
-  ImageSourcePropType,
-  Image,
+  Text, // Certifique-se que Text está aqui
 } from "react-native";
-import {
-  Ionicons,
-  FontAwesome5,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
-const maletaIcon: ImageSourcePropType = require("../assets/maleta.png");
 
 export default function Footer() {
   const navigation =
@@ -23,24 +16,28 @@ export default function Footer() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-        <Feather name="briefcase" size={24} color="#ccc" />
+      {/* Botão Buscar (primeiro item) - assume que esta é a tela de busca real */}
+      <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
+        <Ionicons name="search-outline" size={26} color="#007BFF" />
+        <Text style={[styles.iconText, { color: "#007BFF" }]}>Buscar</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={{ position: "relative" }}
-        onPress={() => navigation.navigate("Chat")}
-      >
-        <MaterialCommunityIcons
-          name="message-text-outline"
-          size={26}
-          color="#ccc"
-        />
-        <View style={styles.notificationDot} />
+      {/* Botão Matches - assume que esta é a tela de match/swiper */}
+      <TouchableOpacity onPress={() => navigation.navigate("match")}>
+        <Ionicons name="heart-outline" size={26} color="#ccc" />
+        <Text style={styles.iconText}>Matches</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Perfil")}>
-        <FontAwesome5 name="user-alt" size={26} color="#ccc" />
+      {/* Botão Chat */}
+      <TouchableOpacity onPress={() => navigation.navigate("chat")}>
+        <Ionicons name="chatbubbles-outline" size={26} color="#ccc" />
+        <Text style={styles.iconText}>Chat</Text>
+      </TouchableOpacity>
+
+      {/* Botão Perfil */}
+      <TouchableOpacity onPress={() => navigation.navigate("PerfilScreen")}>
+        <Ionicons name="person-outline" size={26} color="#ccc" />
+        <Text style={styles.iconText}>Perfil</Text>
       </TouchableOpacity>
     </View>
   );
@@ -48,11 +45,7 @@ export default function Footer() {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 60,
+    height: 70,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
@@ -61,13 +54,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingBottom: 10,
   },
-  notificationDot: {
-    width: 8,
-    height: 8,
-    backgroundColor: "red",
-    borderRadius: 4,
-    position: "absolute",
-    top: -2,
-    right: -2,
+  iconText: {
+    fontSize: 12,
+    color: "#ccc",
+    textAlign: "center",
+    marginTop: 4,
   },
 });

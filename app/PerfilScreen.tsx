@@ -228,7 +228,7 @@ function CompanyFooter() {
     <View style={styles.footerContainer}>
       <TouchableOpacity
         style={styles.footerItem}
-        onPress={() => navigation.navigate("Login")}
+        onPress={() => navigation.navigate("home")}
       >
         <Ionicons name="home-outline" size={24} color="#0066FF" />
         <Text style={styles.footerText}>Home</Text>
