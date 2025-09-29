@@ -21,7 +21,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>
-          BreeV<Text style={styles.logoCheck}>✔</Text>
+          Bree<Text style={styles.logoCheck}>✔</Text>
         </Text>
         <TouchableOpacity onPress={() => navigation.navigate("SearchScreen")}>
           <Ionicons name="search-outline" size={26} color="black" />

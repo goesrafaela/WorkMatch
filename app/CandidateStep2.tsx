@@ -57,7 +57,7 @@ export default function CandidateStep2() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.logo}>
-          BreeV<Text style={styles.logoCheck}>✔</Text>
+          Bree<Text style={styles.logoCheck}>✔</Text>
         </Text>
         <View style={styles.progressBar}>
           <View style={getProgressFillStyle(20)} />
