@@ -1,22 +1,25 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types";
-import { cadastrarUsuario, mockDB } from "../utils/mockData";
+// Mock functions: Substitua por sua lógica de API/Supabase
+const cadastrarUsuario = (data: any, type: string) => {
+  /* Lógica de cadastro */ return 1;
+};
+const mockDB = { userType: "" };
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function CandidateStep6() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<any>();
-  // Use um objeto vazio como fallback caso route.params seja undefined
-  const dados = route.params || {};
+  const { candidateData: dados } = route.params || {};
 
   const handleCadastro = async () => {
-    // Verifique se dados.nome existe antes de usá-lo
-    const nomeDoCandidato = dados.nome || ""; // Se dados.nome for undefined, use uma string vazia ""
-    const imagemDoCandidato = dados.imagem || ""; // O mesmo para a imagem
+    const nomeDoCandidato = dados.nome || "";
+    const imagemDoCandidato = dados.imagem || "";
 
     const id = cadastrarUsuario(dados, "candidato");
     mockDB.userType = "candidato";
@@ -29,40 +32,68 @@ export default function CandidateStep6() {
       console.error("Erro ao salvar dados:", err);
     }
 
-    Alert.alert("Sucesso", "Cadastro finalizado!", [
-      { text: "OK", onPress: () => navigation.replace("home") },
-    ]);
+    // Navega para a tela final de sucesso (Perfil6.png)
+    navigation.replace("login");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Revise seus dados</Text>
-      <Text style={styles.text}>
-        Nome: {dados.nome || ""} {dados.sobrenome || ""}
+      <View style={styles.successIconContainer}>
+        <Ionicons name="checkmark-circle" size={120} color="#007BFF" />
+      </View>
+
+      <Text style={styles.finalTitle}>Parabéns! Seu perfil está pronto</Text>
+      <Text style={styles.finalSubtitle}>
+        Agora você já pode começar a buscar vagas, serviços e dar matches.
       </Text>
-      <Text style={styles.text}>Localização: {dados.localizacao || ""}</Text>
-      <Text style={styles.text}>Áreas: {dados.areas || ""}</Text>
-      <Text style={styles.text}>Experiência: {dados.experiencia || ""}</Text>
-      <Text style={styles.text}>Bio: {dados.bio || ""}</Text>
-      <Text style={styles.text}>Gênero: {dados.genero || ""}</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleCadastro}>
-        <Text style={styles.buttonText}>Concluir Cadastro</Text>
+        <Text style={styles.buttonText}>Começar agora</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 20 },
-  text: { marginBottom: 8, fontSize: 16 },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#fff",
+  },
+  successIconContainer: {
+    marginBottom: 40,
+  },
+  finalTitle: {
+    fontSize: 32,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+  finalSubtitle: {
+    fontSize: 18,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 60,
+  },
   button: {
-    backgroundColor: "#28a745",
-    padding: 15,
-    borderRadius: 8,
+    backgroundColor: "#007BFF",
+    padding: 18,
+    borderRadius: 10,
+    width: "100%",
     alignItems: "center",
     marginTop: 20,
+    marginBottom: 15,
   },
-  buttonText: { color: "#fff", fontWeight: "bold" },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
+  linkText: {
+    fontSize: 16,
+    color: "#007BFF",
+    textDecorationLine: "underline",
+  },
 });
